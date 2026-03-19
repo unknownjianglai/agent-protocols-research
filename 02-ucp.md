@@ -27,50 +27,41 @@
 
 UCP的愿景是创建一个**统一的商务基础设施**，让任何AI智能体都能完成完整的购物流程。
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-
-title UCP 完整商务生命周期
-
-
-
-rectangle "发现\nDiscovery" as Discovery #E3F2FD {
-    :语义搜索;
-    :智能推荐;
-}
-
-rectangle "选择\nSelection" as Selection #E8F5E9 {
-    :商品对比;
-    :价格比较;
-    :评价分析;
-}
-
-rectangle "购买\nPurchase" as Purchase #FFF3E0 {
-    :购物车;
-    :结账;
-    :支付;
-}
-
-rectangle "履约\nFulfillment" as Fulfillment #F3E5F5 {
-    :订单追踪;
-    :物流管理;
-    :配送;
-}
-
-rectangle "售后\nPost-sales" as PostSales #FFEBEE {
-    :退换货;
-    :客户服务;
-    :评价反馈;
-}
-
-Discovery --> Selection
-Selection --> Purchase
-Purchase --> Fulfillment
-Fulfillment --> PostSales
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│              UCP 完整商务生命周期                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌──────────────┐                                           │
+│  │   发现       │  • 语义搜索                                │
+│  │ Discovery    │  • 智能推荐                                │
+│  └──────┬───────┘                                           │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────┐                                           │
+│  │   选择       │  • 商品对比                                │
+│  │ Selection    │  • 价格比较                                │
+│  └──────┬───────┘  • 评价分析                                │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────┐                                           │
+│  │   购买       │  • 购物车                                  │
+│  │ Purchase     │  • 结账                                    │
+│  └──────┬───────┘  • 支付                                    │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────┐                                           │
+│  │   履约       │  • 订单追踪                                │
+│  │ Fulfillment  │  • 物流管理                                │
+│  └──────┬───────┘  • 配送                                    │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────┐                                           │
+│  │   售后       │  • 退换货                                  │
+│  │ Post-sales   │  • 客户服务                                │
+│  └──────────────┘  • 评价反馈                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -81,55 +72,41 @@ UCP 定义了多方参与的生态系统，每个角色都有明确的职责：
 
 ### 角色总览
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-skinparam rectangle {
-    BackgroundColor<<User>> #E3F2FD
-    BackgroundColor<<Agent>> #E8F5E9
-    BackgroundColor<<Merchant>> #FFF3E0
-    BackgroundColor<<Platform>> #F3E5F5
-}
-
-title UCP 生态系统角色
-
-rectangle "用户\n(User)" as User <<User>> {
-    :表达购物需求;
-    :确认购买决策;
-    :接收商品/服务;
-}
-
-rectangle "AI智能体\n(AI Agent)" as Agent <<Agent>> {
-    :理解自然语言需求;
-    :语义搜索商品;
-    :比较选择;
-    :完成交易;
-    :追踪订单;
-}
-
-rectangle "商家/零售商\n(Merchant)" as Merchant <<Merchant>> {
-    :提供商品数据;
-    :管理库存;
-    :处理订单;
-    :履行交付;
-}
-
-rectangle "Google平台\n(Google Platform)" as Platform <<Platform>> {
-    :Google Shopping;
-    :Google Search;
-    :Google Assistant;
-    :Merchant Center;
-}
-
-User --> Agent : 委托购物
-Agent --> Platform : 调用UCP接口
-Platform --> Merchant : 获取商品数据
-Merchant --> Platform : 返回实时信息
-Platform --> Agent : 结构化结果
-Agent --> User : 展示选项/完成购买
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 UCP 生态系统角色                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────────┐                                       │
+│   │  👤 用户        │                                       │
+│   │  (User)         │  • 表达购物需求                        │
+│   └────────┬────────┘  • 确认购买决策                        │
+│            │            • 接收商品/服务                       │
+│            │ 委托购物                                       │
+│            ▼                                                │
+│   ┌─────────────────┐                                       │
+│   │  🤖 AI智能体    │  • 理解自然语言需求                    │
+│   │  (AI Agent)     │  • 语义搜索商品                        │
+│   └────────┬────────┘  • 比较选择                            │
+│            │            • 完成交易                            │
+│            │ 调用UCP接口  • 追踪订单                          │
+│            ▼                                                │
+│   ┌─────────────────┐                                       │
+│   │  🔷 Google平台  │  • Google Shopping                     │
+│   │  (Platform)     │  • Google Search                       │
+│   └───────┬─────────┘  • Google Assistant                    │
+│           │             • Merchant Center                    │
+│           │ 获取商品数据                                     │
+│           ▼                                                 │
+│   ┌─────────────────┐                                       │
+│   │  🏪 商家/零售商 │  • 提供商品数据                        │
+│   │  (Merchant)     │  • 管理库存                            │
+│   └─────────────────┘  • 处理订单                            │
+│                          • 履行交付                          │
+│                                                             │
+│   流程: 用户 → Agent → Platform → Merchant → Platform → Agent → 用户
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### 各角色详细说明
@@ -149,53 +126,46 @@ Agent --> User : 展示选项/完成购买
 
 UCP采用创新的三层架构，提供灵活性和可扩展性：
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-
-title UCP 三层架构
-
-component "第一层: Capabilities (能力层)" as Layer1 #E3F2FD {
-    portin "Product Discovery" as PD
-    portin "Product Details" as PDet
-    portin "Cart Management" as Cart
-    portin "Checkout" as Checkout
-    portin "Order Management" as OM
-}
-
-component "第二层: Extensions (扩展层)" as Layer2 #E8F5E9 {
-    :商家自定义功能;
-    :行业特定扩展;
-    :地区化适配;
-}
-
-component "第三层: Services (服务层)" as Layer3 #FFF3E0 {
-    :Identity Service;
-    :Payment Service (AP2);
-    :Inventory Service;
-    :Fulfillment Service;
-}
-
-Layer1 --> Layer2
-Layer2 --> Layer3
-
-note right of Layer1
-  核心商务能力
-  标准化接口
-end note
-
-note right of Layer2
-  可扩展点
-  定制化能力
-end note
-
-note right of Layer3
-  基础设施服务
-  与AP2集成
-end note
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   UCP 三层架构                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │  第一层: Capabilities (能力层)                        │  │
+│  │  ─────────────────────────────────────────────────    │  │
+│  │  • Product Discovery   (商品发现)                     │  │
+│  │  • Product Details     (商品详情)                     │  │
+│  │  • Cart Management     (购物车管理)                   │  │
+│  │  • Checkout            (结账)                         │  │
+│  │  • Order Management    (订单管理)                     │  │
+│  └──────────────────┬────────────────────────────────────┘  │
+│                     │                                       │
+│                     ▼                                       │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │  第二层: Extensions (扩展层)                          │  │
+│  │  ─────────────────────────────────────────────────    │  │
+│  │  • 商家自定义功能                                     │  │
+│  │  • 行业特定扩展                                       │  │
+│  │  • 地区化适配                                         │  │
+│  └──────────────────┬────────────────────────────────────┘  │
+│                     │                                       │
+│                     ▼                                       │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │  第三层: Services (服务层)                            │  │
+│  │  ─────────────────────────────────────────────────    │  │
+│  │  • Identity Service    (身份服务)                     │  │
+│  │  • Payment Service     (支付服务 - AP2)               │  │
+│  │  • Inventory Service   (库存服务)                     │  │
+│  │  • Fulfillment Service (履约服务)                     │  │
+│  └───────────────────────────────────────────────────────┘  │
+│                                                             │
+│  说明:                                                      │
+│  • 能力层: 核心商务能力、标准化接口                         │
+│  • 扩展层: 可扩展点、定制化能力                             │
+│  • 服务层: 基础设施服务、与AP2集成                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### 2. 核心能力详解
@@ -212,50 +182,48 @@ end note
 
 UCP与Google的 **Agent Payments Protocol (AP2)** 紧密配合：
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-
-title UCP + AP2 集成架构
-
-rectangle "AI Agent" as Agent #E8F5E9
-
-rectangle "UCP (商务层)" as UCP #E3F2FD {
-    :Product Discovery;
-    :Product Details;
-    :Cart Management;
-    :Order Management;
-}
-
-rectangle "AP2 (支付层)" as AP2 #FFF3E0 {
-    :Mandate管理;
-    :支付授权;
-    :凭证管理;
-    :结算处理;
-}
-
-rectangle "Payment Network" as Payment #F3E5F5 {
-    :银行卡;
-    :数字钱包;
-    :其他支付方式;
-}
-
-Agent --> UCP : 发现商品/管理购物车
-UCP --> AP2 : 调用支付 (结账时)
-AP2 --> Payment : 资金结算
-
-note right of UCP
-  商务逻辑层
-  商品生命周期管理
-end note
-
-note right of AP2
-  支付逻辑层
-  安全授权管理
-end note
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│              UCP + AP2 集成架构                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│                      🤖 AI Agent                            │
+│                           │                                 │
+│                           │ 发现商品/管理购物车             │
+│                           ▼                                 │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │  UCP (商务层)                                         │  │
+│  │  ─────────────────────────────────────────────────    │  │
+│  │  • Product Discovery   (商品发现)                     │  │
+│  │  • Product Details     (商品详情)                     │  │
+│  │  • Cart Management     (购物车管理)                   │  │
+│  │  • Order Management    (订单管理)                     │  │
+│  └──────────────────┬────────────────────────────────────┘  │
+│                     │                                       │
+│                     │ 调用支付 (结账时)                     │
+│                     ▼                                       │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │  AP2 (支付层)                                         │  │
+│  │  ─────────────────────────────────────────────────    │  │
+│  │  • Mandate管理                                        │  │
+│  │  • 支付授权                                           │  │
+│  │  • 凭证管理                                           │  │
+│  │  • 结算处理                                           │  │
+│  └──────────────────┬────────────────────────────────────┘  │
+│                     │                                       │
+│                     │ 资金结算                              │
+│                     ▼                                       │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │  Payment Network (支付网络)                           │  │
+│  │  ─────────────────────────────────────────────────    │  │
+│  │  • 银行卡 • 数字钱包 • 其他支付方式                   │  │
+│  └───────────────────────────────────────────────────────┘  │
+│                                                             │
+│  分层说明:                                                  │
+│  • UCP层: 商务逻辑层、商品生命周期管理                      │
+│  • AP2层: 支付逻辑层、安全授权管理                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -327,51 +295,68 @@ endpoints:
 
 ### 完整购物流程
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-
-title UCP 完整购物流程
-
-actor "用户" as User #E3F2FD
-participant "AI Agent" as Agent #E8F5E9
-participant "UCP" as UCP #BBDEFB
-participant "商家系统" as Merchant #FFF3E0
-
-User -> Agent: "找适合扁平足的跑鞋"
-activate Agent
-
-Agent -> UCP: 语义搜索
-activate UCP
-UCP -> Merchant: 查询商品
-activate Merchant
-Merchant --> UCP: 返回匹配商品
-UCP --> Agent: 结构化结果
-deactivate Merchant
-deactivate UCP
-
-Agent --> User: 展示推荐选项
-
-User -> Agent: "比较前三款"
-Agent -> UCP: 获取详细信息
-UCP --> Agent: 价格、评价、库存
-Agent --> User: 对比表格
-
-User -> Agent: "买第二款"
-Agent -> UCP: 加入购物车
-UCP --> Agent: 购物车确认
-
-Agent -> User: 确认订单
-User --> Agent: 确认
-
-Agent -> UCP: 发起结账 (调用AP2)
-UCP --> Agent: 支付结果
-Agent --> User: 订单确认
-
-deactivate Agent
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 UCP 完整购物流程                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  👤 用户        🤖 AI Agent      🔷 UCP      🏪 商家系统    │
+│    │                │               │              │        │
+│    │ "找适合扁平足的跑鞋"          │              │        │
+│    │───────────────>│               │              │        │
+│    │                │               │              │        │
+│    │                │ 语义搜索      │              │        │
+│    │                │──────────────>│              │        │
+│    │                │               │              │        │
+│    │                │               │ 查询商品     │        │
+│    │                │               │─────────────>│        │
+│    │                │               │              │        │
+│    │                │               │ 返回匹配商品 │        │
+│    │                │               │<─────────────│        │
+│    │                │               │              │        │
+│    │                │ 结构化结果    │              │        │
+│    │                │<──────────────│              │        │
+│    │                │               │              │        │
+│    │ 展示推荐选项   │               │              │        │
+│    │<───────────────│               │              │        │
+│    │                │               │              │        │
+│    │ "比较前三款"   │               │              │        │
+│    │───────────────>│               │              │        │
+│    │                │               │              │        │
+│    │                │ 获取详细信息  │              │        │
+│    │                │──────────────>│              │        │
+│    │                │               │              │        │
+│    │                │ 价格/评价/库存│              │        │
+│    │                │<──────────────│              │        │
+│    │                │               │              │        │
+│    │ 对比表格       │               │              │        │
+│    │<───────────────│               │              │        │
+│    │                │               │              │        │
+│    │ "买第二款"     │               │              │        │
+│    │───────────────>│               │              │        │
+│    │                │               │              │        │
+│    │                │ 加入购物车    │              │        │
+│    │                │──────────────>│              │        │
+│    │                │               │              │        │
+│    │                │ 购物车确认    │              │        │
+│    │                │<──────────────│              │        │
+│    │                │               │              │        │
+│    │ 确认订单       │               │              │        │
+│    │<───────────────│               │              │        │
+│    │                │               │              │        │
+│    │ 确认           │               │              │        │
+│    │───────────────>│               │              │        │
+│    │                │               │              │        │
+│    │                │ 发起结账(调用AP2)             │        │
+│    │                │──────────────>│              │        │
+│    │                │               │              │        │
+│    │                │ 支付结果      │              │        │
+│    │                │<──────────────│              │        │
+│    │                │               │              │        │
+│    │ 订单确认       │               │              │        │
+│    │<───────────────│               │              │        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -395,84 +380,101 @@ deactivate Agent
 
 Google将UCP集成到Google Shopping中：
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-
-title Google Shopping + UCP 场景
-
-actor "用户" as User
-participant "Google Search" as Search
-participant "Google AI" as AI #E8F5E9
-participant "UCP" as UCP #BBDEFB
-participant "商家" as Merchant #FFF3E0
-
-User -> Search: "适合扁平足的舒适跑鞋"
-Search -> AI: 触发AI模式
-
-AI -> UCP: 语义搜索
-UCP -> Merchant: 查询商品+库存
-Merchant --> UCP: 返回数据
-UCP --> AI: 结构化商品信息
-
-AI -> AI: 分析用户足型
-AI --> User: 基于足型的智能推荐
-
-User -> AI: "比较前三款价格"
-AI -> UCP: 获取实时价格
-UCP --> AI: 价格数据
-AI --> User: 价格对比表
-
-User -> AI: "买第二款"
-AI -> UCP: 完成购买流程
-UCP --> AI: 订单确认
-AI --> User: 订单详情+追踪链接
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│            Google Shopping + UCP 场景                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  👤 用户    🔍 Google Search   🤖 Google AI   🔷 UCP   🏪 商家│
+│    │              │                │           │        │   │
+│    │ "适合扁平足的舒适跑鞋"        │           │        │   │
+│    │─────────────>│                │           │        │   │
+│    │              │                │           │        │   │
+│    │              │ 触发AI模式     │           │        │   │
+│    │              │───────────────>│           │        │   │
+│    │              │                │           │        │   │
+│    │              │                │ 语义搜索  │        │   │
+│    │              │                │──────────>│        │   │
+│    │              │                │           │        │   │
+│    │              │                │           │ 查询商品+库存│
+│    │              │                │           │───────>│   │
+│    │              │                │           │        │   │
+│    │              │                │           │ 返回数据│   │
+│    │              │                │           │<───────│   │
+│    │              │                │           │        │   │
+│    │              │                │ 结构化商品信息      │   │
+│    │              │                │<──────────│        │   │
+│    │              │                │           │        │   │
+│    │              │                │ 分析用户足型        │   │
+│    │              │                │(内部处理) │        │   │
+│    │              │                │           │        │   │
+│    │ 基于足型的智能推荐           │           │        │   │
+│    │<─────────────────────────────│           │        │   │
+│    │              │                │           │        │   │
+│    │ "比较前三款价格"             │           │        │   │
+│    │─────────────────────────────>│           │        │   │
+│    │              │                │           │        │   │
+│    │              │                │ 获取实时价格        │   │
+│    │              │                │──────────>│        │   │
+│    │              │                │           │        │   │
+│    │              │                │ 价格数据  │        │   │
+│    │              │                │<──────────│        │   │
+│    │              │                │           │        │   │
+│    │ 价格对比表   │                │           │        │   │
+│    │<─────────────────────────────│           │        │   │
+│    │              │                │           │        │   │
+│    │ "买第二款"   │                │           │        │   │
+│    │─────────────────────────────>│           │        │   │
+│    │              │                │           │        │   │
+│    │              │                │ 完成购买流程        │   │
+│    │              │                │──────────>│        │   │
+│    │              │                │           │        │   │
+│    │              │                │ 订单确认  │        │   │
+│    │              │                │<──────────│        │   │
+│    │              │                │           │        │   │
+│    │ 订单详情+追踪链接            │           │        │   │
+│    │<─────────────────────────────│           │        │   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### 案例2: Shopify UCP集成
 
 Shopify通过两个MCP服务器暴露商务原子能力：
 
-```plantuml
-@startuml
-
-skinparam backgroundColor #FFFFFF
-
-title Shopify UCP 集成架构
-
-rectangle "AI Agent" as Agent #E8F5E9
-
-rectangle "MCP Servers" as MCP #E3F2FD {
-    [Catalog Server]
-    [Commerce Server]
-}
-
-rectangle "UCP Adapter" as Adapter #FFF3E0
-
-rectangle "Shopify" as Shopify #E8F5E9 {
-    [Shopify Backend]
-    [Storefront API]
-    [Admin API]
-}
-
-Agent --> MCP : MCP协议
-MCP --> Adapter : 标准化调用
-Adapter --> Shopify : GraphQL/REST
-
-note right of MCP
-  MCP Server 1: 商品目录
-  MCP Server 2: 商务操作
-end note
-
-note right of Adapter
-  将UCP转换为
-  Shopify API调用
-end note
-
-@enduml
+```
+┌─────────────────────────────────────────────────────────────┐
+│              Shopify UCP 集成架构                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   🤖 AI Agent                                               │
+│        │                                                    │
+│        │ MCP协议                                            │
+│        ▼                                                    │
+│   ┌─────────────────────────────────────────────┐           │
+│   │  MCP Servers                                │           │
+│   │  ─────────────────────────────────────────  │           │
+│   │  • Catalog Server  (商品目录)               │           │
+│   │  • Commerce Server (商务操作)               │           │
+│   └───────────┬─────────────────────────────────┘           │
+│               │ 标准化调用                                  │
+│               ▼                                             │
+│   ┌─────────────────────────────────────────────┐           │
+│   │  UCP Adapter                                │           │
+│   │  ─────────────────────────────────────────  │           │
+│   │  将UCP转换为Shopify API调用                 │           │
+│   └───────────┬─────────────────────────────────┘           │
+│               │ GraphQL/REST                                │
+│               ▼                                             │
+│   ┌─────────────────────────────────────────────┐           │
+│   │  Shopify                                    │           │
+│   │  ─────────────────────────────────────────  │           │
+│   │  • Shopify Backend                          │           │
+│   │  • Storefront API                           │           │
+│   │  • Admin API                                │           │
+│   └─────────────────────────────────────────────┘           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---

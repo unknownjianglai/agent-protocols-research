@@ -27,29 +27,30 @@
 
 ACP的核心理念是**"Build once, distribute everywhere"** —— 商家只需接入一次ACP，就可以将商品和服务分发到任何兼容ACP的AI智能体平台。
 
-```mermaid
-graph TB
-    Seller[🏪 商家<br/>Seller]
-    ACP[🔗 ACP Protocol]
-    GPT[🤖 ChatGPT]
-    Claude[🤖 Claude]
-    Others[🤖 其他Agent]
-    Buyer[👤 用户<br/>Buyer]
-    
-    Seller -->|接入一次| ACP
-    ACP -->|分发| GPT
-    ACP -->|分发| Claude
-    ACP -->|分发| Others
-    GPT -->|服务| Buyer
-    Claude -->|服务| Buyer
-    Others -->|服务| Buyer
-    
-    style ACP fill:#BBDEFB,stroke:#1976D2,stroke-width:2px
-    style Seller fill:#E3F2FD,stroke:#2196F3
-    style GPT fill:#E8F5E9,stroke:#4CAF50
-    style Claude fill:#E8F5E9,stroke:#4CAF50
-    style Others fill:#E8F5E9,stroke:#4CAF50
-    style Buyer fill:#FFF3E0,stroke:#FF9800
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ACP 分发架构                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   🏪 商家 (Seller)                                          │
+│        │                                                    │
+│        │ 接入一次                                            │
+│        ▼                                                    │
+│   🔗 ACP Protocol ◄───────┐                                 │
+│        │                  │                                 │
+│        ├──────┬──────────┼──────┐                          │
+│        │      │          │      │                          │
+│        ▼      ▼          ▼      ▼                          │
+│   🤖 ChatGPT  🤖 Claude  🤖 其他Agent                       │
+│        │      │          │                                 │
+│        └──────┴──────────┴──────┐                          │
+│                                 │                          │
+│                                 ▼                          │
+│                           👤 用户 (Buyer)                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+核心理念: Build once, distribute everywhere
 ```
 
 ---
@@ -60,25 +61,33 @@ ACP 定义了清晰的四方参与模型：
 
 ### 角色总览
 
-```mermaid
-graph LR
-    Buyer[👤 买家<br/>Buyer<br/>• 人类用户<br/>• 发起购买需求<br/>• 授权支付]
-    Agent[🤖 AI智能体<br/>Agent<br/>• 理解用户需求<br/>• 发现商品<br/>• 发起结账]
-    Seller[🏪 商家<br/>Seller<br/>• 提供商品/服务<br/>• 处理订单<br/>• 履约交付]
-    PSP[💳 支付服务商<br/>PSP<br/>• Stripe等<br/>• 处理支付<br/>• 资金结算]
-    
-    Buyer -->|1. 委托购买| Agent
-    Agent -->|2. 发起结账| Seller
-    Seller -->|3. 请求支付| PSP
-    PSP -->|4. 验证授权| Buyer
-    PSP -->|5. 资金结算| Seller
-    Seller -->|6. 订单确认| Agent
-    Agent -->|7. 交付结果| Buyer
-    
-    style Buyer fill:#E3F2FD,stroke:#2196F3
-    style Agent fill:#E8F5E9,stroke:#4CAF50
-    style Seller fill:#FFF3E0,stroke:#FF9800
-    style PSP fill:#F3E5F5,stroke:#9C27B0
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ACP 四方参与模型                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   👤 买家 (Buyer)          🤖 AI智能体 (Agent)              │
+│   • 人类用户                • 理解用户需求                   │
+│   • 发起购买需求            • 发现商品                       │
+│   • 授权支付                • 发起结账                       │
+│        │                         │                          │
+│        │ 1.委托购买              │ 2.发起结账                │
+│        │────────────────────────>│──────────────────┐       │
+│        │                         │                  │       │
+│        │ 7.交付结果              │ 6.订单确认       │       │
+│        │<────────────────────────│<─────────────────┘       │
+│        │                         │                          │
+│   💳 支付服务商 (PSP)      🏪 商家 (Seller)                 │
+│   • Stripe等                • 提供商品/服务                  │
+│   • 处理支付                • 处理订单                       │
+│   • 资金结算                • 履约交付                       │
+│        ▲                         │                          │
+│        │ 4.验证授权              │ 3.请求支付                │
+│        └─────────────────────────┘──────────────────>        │
+│        │                                                │    │
+│        └──────────────── 5.资金结算 <───────────────────┘    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ### 各角色详细说明
@@ -96,37 +105,44 @@ graph LR
 
 ### 标准购买流程
 
-```mermaid
-sequenceDiagram
-    actor Buyer as 👤 用户
-    participant Agent as 🤖 AI智能体
-    participant Seller as 🏪 商家
-    participant PSP as 💳 支付服务商
-    
-    Buyer->>Agent: 1. 委托购买
-    activate Agent
-    
-    Agent->>Seller: 2. 发起结账请求
-    activate Seller
-    Seller-->>Agent: 3. 返回结账会话
-    
-    Agent->>Buyer: 4. 请求支付授权
-    activate Buyer
-    Buyer-->>Agent: 5. 用户确认
-    deactivate Buyer
-    
-    Agent->>Seller: 6. 提交支付令牌
-    
-    Seller->>PSP: 7. 处理支付
-    activate PSP
-    PSP-->>Seller: 8. 支付确认
-    deactivate PSP
-    
-    Seller-->>Agent: 9. 订单确认
-    deactivate Seller
-    
-    Agent-->>Buyer: 10. 订单确认/交付
-    deactivate Agent
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 ACP 标准购买流程                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  👤 用户        🤖 AI智能体      🏪 商家      💳 支付服务商  │
+│    │                │               │              │        │
+│    │ 1.委托购买     │               │              │        │
+│    │───────────────>│               │              │        │
+│    │                │               │              │        │
+│    │                │ 2.发起结账请求 │              │        │
+│    │                │──────────────>│              │        │
+│    │                │               │              │        │
+│    │                │ 3.返回结账会话 │              │        │
+│    │                │<──────────────│              │        │
+│    │                │               │              │        │
+│    │ 4.请求支付授权 │               │              │        │
+│    │<───────────────│               │              │        │
+│    │                │               │              │        │
+│    │ 5.用户确认     │               │              │        │
+│    │───────────────>│               │              │        │
+│    │                │               │              │        │
+│    │                │ 6.提交支付令牌 │              │        │
+│    │                │──────────────>│              │        │
+│    │                │               │              │        │
+│    │                │               │ 7.处理支付   │        │
+│    │                │               │─────────────>│        │
+│    │                │               │              │        │
+│    │                │               │ 8.支付确认   │        │
+│    │                │               │<─────────────│        │
+│    │                │               │              │        │
+│    │                │ 9.订单确认    │              │        │
+│    │                │<──────────────│              │        │
+│    │                │               │              │        │
+│    │ 10.订单确认/交付              │              │        │
+│    │<───────────────│               │              │        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
