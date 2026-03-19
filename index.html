@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Protocols Research</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans SC', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        },
+                        surface: {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            800: '#262626',
+                            900: '#171717',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+        .prose { color: #262626; line-height: 1.75; }
+        .prose h1 { font-size: 2.25rem; font-weight: 700; color: #171717; margin-bottom: 1.5rem; margin-top: 0; letter-spacing: -0.025em; }
+        .prose h2 { font-size: 1.5rem; font-weight: 600; color: #171717; margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e5e5; letter-spacing: -0.025em; }
+        .prose h3 { font-size: 1.25rem; font-weight: 600; color: #262626; margin-top: 2rem; margin-bottom: 0.75rem; letter-spacing: -0.025em; }
+        .prose p { margin-bottom: 1.25rem; color: #404040; }
+        .prose ul, .prose ol { margin-bottom: 1.25rem; padding-left: 1.5rem; }
+        .prose ul { list-style-type: disc; }
+        .prose ol { list-style-type: decimal; }
+        .prose li { margin-bottom: 0.5rem; color: #404040; }
+        .prose code { font-family: 'JetBrains Mono', monospace; font-size: 0.875em; background: #f5f5f5; color: #171717; padding: 0.2em 0.4em; border-radius: 0.25rem; border: 1px solid #e5e5e5; }
+        .prose pre { background: #171717; color: #f5f5f5; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; font-size: 0.875rem; line-height: 1.7; }
+        .prose pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+        .prose blockquote { border-left: 3px solid #0ea5e9; padding-left: 1rem; margin-left: 0; margin-bottom: 1.25rem; color: #525252; font-style: italic; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.875rem; }
+        .prose th { background: #fafafa; border: 1px solid #e5e5e5; padding: 0.75rem; text-align: left; font-weight: 600; color: #171717; }
+        .prose td { border: 1px solid #e5e5e5; padding: 0.75rem; color: #404040; }
+        .prose tr:nth-child(even) { background: #fafafa; }
+        .prose hr { border: none; border-top: 1px solid #e5e5e5; margin: 2.5rem 0; }
+        .prose a { color: #0284c7; text-decoration: none; font-weight: 500; }
+        .prose a:hover { text-decoration: underline; }
+        .nav-item { display: flex; align-items: center; padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.875rem; color: #525252; transition: all 0.15s ease; cursor: pointer; }
+        .nav-item:hover { background: #f5f5f5; color: #171717; }
+        .nav-item.active { background: #f0f9ff; color: #0284c7; font-weight: 500; }
+        .nav-item .icon { width: 1rem; height: 1rem; margin-right: 0.5rem; flex-shrink: 0; }
+        .toc-link { display: block; padding: 0.375rem 0; font-size: 0.8125rem; color: #737373; transition: color 0.15s ease; border-left: 1px solid #e5e5e5; padding-left: 0.75rem; margin-left: -1px; }
+        .toc-link:hover { color: #171717; }
+        .toc-link.active { color: #0284c7; border-left-color: #0284c7; font-weight: 500; }
+        .search-input { width: 100%; padding: 0.5rem 0.75rem 0.5rem 2rem; border: 1px solid #e5e5e5; border-radius: 0.375rem; font-size: 0.875rem; background: #fafafa; transition: all 0.15s ease; }
+        .search-input:focus { outline: none; border-color: #0ea5e9; background: white; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1); }
+        .breadcrumb { display: flex; align-items: center; font-size: 0.875rem; color: #737373; }
+        .breadcrumb a { color: #737373; text-decoration: none; }
+        .breadcrumb a:hover { color: #171717; }
+        .breadcrumb-separator { margin: 0 0.5rem; color: #d4d4d4; }
+        .skeleton { background: linear-gradient(90deg, #f5f5f5 25%, #e5e5e5 50%, #f5f5f5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 0.25rem; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="min-h-screen flex">
+        <aside class="w-64 bg-surface-50 border-r border-surface-200 flex flex-col fixed h-full overflow-hidden">
+            <div class="h-14 flex items-center px-4 border-b border-surface-200 bg-white">
+                <div class="flex items-center space-x-2">
+                    <div class="w-7 h-7 bg-primary-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                        </svg>
+                    </div>
+                    <span class="font-semibold text-surface-900 text-sm">Agent Protocols</span>
+                </div>
+            </div>
+            <div class="p-3 border-b border-surface-200">
+                <div class="relative">
+                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" placeholder="Search..." class="search-input">
+                </div>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-3 px-2">
+                <div class="mb-4">
+                    <div class="px-2 mb-1">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Research</span>
+                    </div>
+                    <div class="space-y-0.5">
+                        <a href="#" class="nav-item active" data-file="08-comparison.md">
+                            <svg class="icon text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            Overview
+                        </a>
+                        <a href="#" class="nav-item" data-file="01-acp.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            ACP
+                        </a>
+                        <a href="#" class="nav-item" data-file="02-ucp.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            UCP
+                        </a>
+                        <a href="#" class="nav-item" data-file="03-ap2.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            AP2
+                        </a>
+                        <a href="#" class="nav-item" data-file="04-x402.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            x402
+                        </a>
+                        <a href="#" class="nav-item" data-file="05-mcp.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            MCP
+                        </a>
+                        <a href="#" class="nav-item" data-file="06-a2a.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            A2A
+                        </a>
+                        <a href="#" class="nav-item" data-file="07-anp.md">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            ANP
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <div class="p-3 border-t border-surface-200 bg-white">
+                <div class="text-xs text-gray-400">
+                    <p>Last updated: Mar 2026</p>
+                    <p class="mt-0.5">8 research reports</p>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="flex-1 ml-64 flex">
+            <div class="flex-1 min-w-0">
+                <header class="h-14 border-b border-surface-200 bg-white flex items-center px-6 sticky top-0 z-10">
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="loadFile('08-comparison.md'); return false;">Research</a>
+                        <span class="breadcrumb-separator">/</span>
+                        <span id="current-page" class="text-surface-900 font-medium">Overview</span>
+                    </nav>
+                </header>
+                <article class="px-8 py-8">
+                    <div class="max-w-3xl mx-auto">
+                        <div id="content" class="prose"></div>
+                    </div>
+                </article>
+            </div>
+            <aside class="w-64 border-l border-surface-200 bg-white hidden xl:block sticky top-0 h-screen overflow-y-auto">
+                <div class="p-4">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">On this page</h3>
+                    <nav id="toc" class="space-y-0.5"></nav>
+                </div>
+            </aside>
+        </main>
+    </div>
+    
+    <script>
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true,
+            gfm: true,
+            headerIds: true
+        });
+        
+        const fileCache = {};
+        
+        function generateTOC(content) {
+            const toc = document.getElementById('toc');
+            toc.innerHTML = '';
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = marked.parse(content);
+            const headers = tempDiv.querySelectorAll('h2, h3');
+            headers.forEach((header, index) => {
+                const link = document.createElement('a');
+                link.href = `#${header.id || 'section-' + index}`;
+                link.className = `toc-link ${header.tagName.toLowerCase()}`;
+                link.textContent = header.textContent;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    const target = document.getElementById(header.id || 'section-' + index);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                };
+                toc.appendChild(link);
+            });
+        }
+        
+        async function loadFile(filename) {
+            const contentDiv = document.getElementById('content');
+            const currentPage = document.getElementById('current-page');
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.file === filename) {
+                    item.classList.add('active');
+                    currentPage.textContent = item.textContent.trim();
+                }
+            });
+            
+            contentDiv.innerHTML = '<div class="skeleton h-8 w-3/4 mb-4"></div><div class="skeleton h-4 w-full mb-2"></div><div class="skeleton h-4 w-5/6 mb-2"></div><div class="skeleton h-4 w-4/6"></div>';
+            
+            try {
+                let content;
+                if (fileCache[filename]) {
+                    content = fileCache[filename];
+                } else {
+                    const response = await fetch(filename);
+                    if (!response.ok) throw new Error(`Failed to load ${filename}`);
+                    content = await response.text();
+                    fileCache[filename] = content;
+                }
+                
+                generateTOC(content);
+                
+                // Remove mermaid/plantuml code blocks - just show as plain code
+                let cleanContent = content.replace(/```mermaid\n[\s\S]*?```/g, match => {
+                    const code = match.replace(/```mermaid\n/, '').replace(/```$/, '');
+                    return `<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 my-4"><p class="text-gray-600 text-sm mb-2">📊 图表</p><pre class="bg-white p-3 rounded text-xs overflow-x-auto border"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre></div>`;
+                });
+                cleanContent = cleanContent.replace(/```plantuml\n[\s\S]*?```/g, match => {
+                    const code = match.replace(/```plantuml\n/, '').replace(/```$/, '');
+                    return `<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 my-4"><p class="text-gray-600 text-sm mb-2">📊 图表</p><pre class="bg-white p-3 rounded text-xs overflow-x-auto border"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre></div>`;
+                });
+                
+                const html = marked.parse(cleanContent);
+                contentDiv.innerHTML = html;
+                
+                const headers = contentDiv.querySelectorAll('h2, h3');
+                headers.forEach((header, index) => { if (!header.id) header.id = 'section-' + index; });
+                
+                document.querySelectorAll('pre code').forEach((block) => { hljs.highlightElement(block); });
+                window.location.hash = filename;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (error) {
+                contentDiv.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-lg p-6"><h2 class="text-red-800 font-semibold mb-2">Failed to load</h2><p class="text-red-600">${error.message}</p></div>`;
+            }
+        }
+        
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => { e.preventDefault(); loadFile(item.dataset.file); });
+        });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.slice(1);
+            loadFile(hash && hash.endsWith('.md') ? hash : '08-comparison.md');
+        });
+        
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1);
+            if (hash && hash.endsWith('.md')) loadFile(hash);
+        });
+    </script>
+</body>
+</html>
