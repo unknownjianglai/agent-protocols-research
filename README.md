@@ -13,7 +13,8 @@ Agent Protocols Research Library
 5. **MCP** (Model Context Protocol) - Anthropic
 6. **A2A** (Agent2Agent Protocol) - Google
 7. **ANP** (Agent Network Protocol) - 开源社区
-8. **对比分析** - 协议全景对比
+8. **MPP** (Machine Payments Protocol) - Stripe + Paradigm
+9. **对比分析** - 协议全景对比
 
 ## 本地部署
 
@@ -59,7 +60,8 @@ agent-protocols-research/
 ├── 05-mcp.md          # MCP协议调研报告
 ├── 06-a2a.md          # A2A协议调研报告
 ├── 07-anp.md          # ANP协议调研报告
-└── 08-comparison.md   # 协议对比分析
+├── 08-comparison.md   # 协议对比分析
+└── 09-mpp.md          # MPP协议调研报告
 ```
 
 ## 使用说明
@@ -83,6 +85,7 @@ agent-protocols-research/
 - [AP2 Documentation](https://ap2lab.com/docs/)
 - [x402 Website](https://www.x402.org/)
 - [ANP White Paper](https://w3c-cg.github.io/ai-agent-protocol/)
+- [MPP GitHub](https://github.com/tempoxyz/mpp-specs)
 
 ## 许可证
 
