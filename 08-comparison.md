@@ -81,12 +81,12 @@ graph TB
     MPP -.-> x402
     AP2 -.-> MPP
     
-    style ACP fill:#e3f2fd
-    style UCP fill:#e3f2fd
-    style A2A fill:#f3e5f5
-    style AP2 fill:#fff3e0
-    style x402 fill:#e8f5e9
-    style MPP fill:#e8f5e9
+    style ACP fill:#e3f2fd;
+    style UCP fill:#e3f2fd;
+    style A2A fill:#f3e5f5;
+    style AP2 fill:#fff3e0;
+    style x402 fill:#e8f5e9;
+    style MPP fill:#e8f5e9;
 ```
 
 ### 2.2 协议覆盖范围对比
@@ -249,12 +249,12 @@ flowchart TD
     Q7 -->|Google生态| UCP_SEL[UCP]
     Q7 -->|OpenAI生态| ACP_SEL[ACP]
     
-    style A2A_SEL fill:#f3e5f5
-    style UCP_SEL fill:#e3f2fd
-    style ACP_SEL fill:#e3f2fd
-    style AP2_SEL fill:#fff3e0
-    style x402_SEL fill:#e8f5e9
-    style MPP_SEL fill:#e8f5e9
+    style A2A_SEL fill:#f3e5f5;
+    style UCP_SEL fill:#e3f2fd;
+    style ACP_SEL fill:#e3f2fd;
+    style AP2_SEL fill:#fff3e0;
+    style x402_SEL fill:#e8f5e9;
+    style MPP_SEL fill:#e8f5e9;
 ```
 
 ---
