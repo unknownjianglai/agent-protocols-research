@@ -6,6 +6,7 @@
     <title>Agent Protocols Research</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,6 +82,7 @@
         .breadcrumb-separator { margin: 0 0.5rem; color: #d4d4d4; }
         .skeleton { background: linear-gradient(90deg, #f5f5f5 25%, #e5e5e5 50%, #f5f5f5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 0.25rem; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .mermaid { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 0.5rem; padding: 1rem; margin: 1.5rem 0; }
     </style>
 </head>
 <body class="bg-white">
@@ -200,6 +202,22 @@
     </div>
     
     <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                useMaxWidth: true
+            },
+            gantt: {
+                useMaxWidth: true
+            }
+        });
+        
         marked.setOptions({
             highlight: function(code, lang) {
                 if (lang && hljs.getLanguage(lang)) {
@@ -213,6 +231,7 @@
         });
         
         const fileCache = {};
+        let mermaidIdCounter = 0;
         
         function generateTOC(content) {
             const toc = document.getElementById('toc');
@@ -261,23 +280,41 @@
                 
                 generateTOC(content);
                 
-                // Remove mermaid/plantuml code blocks - just show as plain code
-                let cleanContent = content.replace(/```mermaid\n[\s\S]*?```/g, match => {
-                    const code = match.replace(/```mermaid\n/, '').replace(/```$/, '');
-                    return `<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 my-4"><p class="text-gray-600 text-sm mb-2">📊 图表</p><pre class="bg-white p-3 rounded text-xs overflow-x-auto border"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre></div>`;
-                });
-                cleanContent = cleanContent.replace(/```plantuml\n[\s\S]*?```/g, match => {
-                    const code = match.replace(/```plantuml\n/, '').replace(/```$/, '');
-                    return `<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 my-4"><p class="text-gray-600 text-sm mb-2">📊 图表</p><pre class="bg-white p-3 rounded text-xs overflow-x-auto border"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre></div>`;
+                // Extract and store mermaid diagrams
+                const mermaidDiagrams = [];
+                let processedContent = content.replace(/```mermaid\n([\s\S]*?)```/g, (match, code) => {
+                    const id = 'mermaid-' + (++mermaidIdCounter);
+                    mermaidDiagrams.push({ id, code: code.trim() });
+                    return `<div class="mermaid" id="${id}">${code.trim()}</div>`;
                 });
                 
-                const html = marked.parse(cleanContent);
+                // Handle plantuml
+                processedContent = processedContent.replace(/```plantuml\n([\s\S]*?)```/g, (match, code) => {
+                    return `<div class="bg-gray-50 border border-gray-200 rounded-lg p-4 my-4"><p class="text-gray-600 text-sm mb-2">📊 PlantUML 图表</p><pre class="bg-white p-3 rounded text-xs overflow-x-auto border"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre></div>`;
+                });
+                
+                const html = marked.parse(processedContent);
                 contentDiv.innerHTML = html;
+                
+                // Render mermaid diagrams
+                if (mermaidDiagrams.length > 0) {
+                    try {
+                        await mermaid.run({
+                            querySelector: '.mermaid'
+                        });
+                    } catch (e) {
+                        console.error('Mermaid rendering error:', e);
+                    }
+                }
                 
                 const headers = contentDiv.querySelectorAll('h2, h3');
                 headers.forEach((header, index) => { if (!header.id) header.id = 'section-' + index; });
                 
-                document.querySelectorAll('pre code').forEach((block) => { hljs.highlightElement(block); });
+                document.querySelectorAll('pre code').forEach((block) => { 
+                    if (!block.closest('.mermaid')) {
+                        hljs.highlightElement(block); 
+                    }
+                });
                 window.location.hash = filename;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
